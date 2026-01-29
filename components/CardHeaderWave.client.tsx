@@ -126,6 +126,7 @@ export default function CardHeaderWave() {
 
       let time = 0;
       function animate() {
+        if (!geometry || !particles || !scene || !camera || !renderer) return;
         time += 0.05;
         mouse.x += (targetMouse.x - mouse.x) * 0.05;
         mouse.y += (targetMouse.y - mouse.y) * 0.05;
