@@ -55,7 +55,9 @@ export default function ParticleSphereCanvas() {
     let target = new THREE.Vector2(0, 0);
 
     function onMove(e: MouseEvent) {
-      const rect = container.getBoundingClientRect();
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
       target.x = mouse.x;
@@ -105,8 +107,10 @@ export default function ParticleSphereCanvas() {
     animate();
 
     function onResize() {
-      const w = container.clientWidth;
-      const h = container.clientHeight;
+      const el = containerRef.current;
+      if (!el) return;
+      const w = el.clientWidth;
+      const h = el.clientHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
