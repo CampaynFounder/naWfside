@@ -1,3 +1,4 @@
+'use client';
 import Button from '../../../components/ui/Button.client';
 import ProducerCard from '../../../components/ProducerCard';
 import { producers } from '../../../lib/mock';
