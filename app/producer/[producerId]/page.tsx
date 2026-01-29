@@ -1,8 +1,8 @@
-\"use client\";
+\'use client\';
 import Header from '../../../components/Header';
 import { producers } from '../../../lib/mock';
-import GenerationModal from '../../../components/GenerationModal';
-import Button from '../../../components/ui/Button';
+import GenerationModal from '../../../components/GenerationModal.client';
+import Button from '../../../components/ui/Button.client';
 
 export default function ProducerProfile({ params }: any) {
   const producer = producers.find((p) => p.id === params.producerId);

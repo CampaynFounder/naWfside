@@ -1,4 +1,4 @@
-import Button from '../../../components/ui/Button';
+import Button from '../../../components/ui/Button.client';
 import ProducerCard from '../../../components/ProducerCard';
 import { producers } from '../../../lib/mock';
 import Header from '../../../components/Header';
