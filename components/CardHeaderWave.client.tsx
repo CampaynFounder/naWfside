@@ -42,9 +42,11 @@ export default function CardHeaderWave() {
     window.addEventListener("touchmove", onTouch, { passive: true });
 
     function start() {
-      const rect = container.getBoundingClientRect();
-      const w = Math.round(rect.width) || container.clientWidth || 300;
-      const h = Math.round(rect.height) || container.clientHeight || 96;
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const w = Math.round(rect.width) || el.clientWidth || 300;
+      const h = Math.round(rect.height) || el.clientHeight || 96;
       if (w < 10 || h < 10) return;
 
       scene = new THREE.Scene();
@@ -67,7 +69,7 @@ export default function CardHeaderWave() {
       canvas.style.width = "100%";
       canvas.style.height = "100%";
       canvas.style.pointerEvents = "none";
-      container.appendChild(canvas);
+      el.appendChild(canvas);
 
       geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(PARTICLE_COUNT * 3);
@@ -169,13 +171,15 @@ export default function CardHeaderWave() {
     const rafId = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (tryStart()) return;
+        const obsTarget = containerRef.current;
+        if (!obsTarget) return;
         resizeObserver = new ResizeObserver(() => {
           if (tryStart()) {
             resizeObserver?.disconnect();
             resizeObserver = null;
           }
         });
-        resizeObserver.observe(container);
+        resizeObserver.observe(obsTarget);
       });
     });
 

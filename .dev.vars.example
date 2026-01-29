@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local Wrangler/OpenNext preview (not committed).
+# NEXTJS_ENV controls which Next.js .env file is loaded in local Workers preview.
+NEXTJS_ENV=development

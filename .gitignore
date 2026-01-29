@@ -9,3 +9,5 @@ npm-debug.log
 .DS_Store
 tsconfig.tsbuildinfo
 /naWfside
+.open-next
+.dev.vars
