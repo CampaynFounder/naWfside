@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:pages": "opennextjs-cloudflare build",
     "start": "next start",
     "clean": "rm -rf .next",
     "dev:clean": "npm run clean && next dev",

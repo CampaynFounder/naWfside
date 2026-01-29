@@ -14,7 +14,9 @@ The app is configured for [Cloudflare Workers](https://developers.cloudflare.com
 - **Deploy:** `npm run deploy` (builds then deploys with Wrangler)
 - **Upload only (no deploy):** `npm run upload`
 
-For Git-based deploys, connect this repo in the Cloudflare dashboard (Workers & Pages). Use build command `opennextjs-cloudflare build` and ensure Node 18+ and `npm ci` (or `npm install`) run first. Set any env vars (e.g. Supabase, Stripe) in the Cloudflare project settings.
+For **Cloudflare Pages** (Git): set **Build command** to `npm run build:pages` and **Build output directory** to `.open-next/assets`. The repo includes `wrangler.toml` with `pages_build_output_dir` so Pages finds the output; do not use `out` unless you switch to a static export.
 
-Requires Wrangler 3.99+ and a `wrangler.jsonc` (included). Optional: copy `.dev.vars.example` to `.dev.vars` for local Wrangler env.
+For Workers (CLI): run `npm run deploy` after `npm ci`. Use Node 18+ and set env vars (e.g. Supabase, Stripe) in the Cloudflare project.
+
+Requires Wrangler 3.99+ and `wrangler.jsonc` (included). Optional: copy `.dev.vars.example` to `.dev.vars` for local Wrangler env.
 

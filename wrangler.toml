@@ -1,0 +1,4 @@
+# Cloudflare Pages: use this so Pages finds the build output.
+# Build command must produce .open-next/ (e.g. npm run build:pages).
+name = "nawfside"
+pages_build_output_dir = ".open-next/assets"
