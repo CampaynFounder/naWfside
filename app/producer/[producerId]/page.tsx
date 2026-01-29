@@ -1,3 +1,4 @@
+'use client';
 import Header from '../../../components/Header';
 import { producers } from '../../../lib/mock';
 import GenerationModal from '../../../components/GenerationModal.client';
