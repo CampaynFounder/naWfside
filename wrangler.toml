@@ -1,6 +1,0 @@
-# Cloudflare Pages: full .open-next/ so _worker.js runs.
-# Build command: npm run build:pages. Output dir: .open-next
-name = "nawfside"
-pages_build_output_dir = ".open-next"
-compatibility_date = "2024-12-30"
-compatibility_flags = ["nodejs_compat"]

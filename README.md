@@ -6,54 +6,28 @@ This repository contains the frontend (Next.js), backend API routes, Supabase sc
 
 See `.env.example` for required environment variables.
 
-## Deploy to Cloudflare
+## Deploy to Cloudflare (Workers only)
 
-This app uses [OpenNext Cloudflare](https://opennext.js.org/cloudflare).
+This app uses [OpenNext Cloudflare](https://opennext.js.org/cloudflare). **Deploy as a Worker** — the config is `wrangler.jsonc` (main, assets, services). Pages is not supported for this stack (missing bindings → black page).
 
-### Recommended: Deploy as a Worker (avoids black/blank page)
+### From your machine
 
-OpenNext needs **ASSETS** and **WORKER_SELF_REFERENCE** bindings. Workers provide these via `wrangler.workers.jsonc`; **Pages does not**, so deploying to Pages often results in a **completely black page** (no HTML or static assets served correctly).
+1. Build and deploy in one step:
+   ```bash
+   npm run deploy
+   ```
+2. Set `CLOUDFLARE_API_TOKEN` (create at [Create API Token](https://dash.cloudflare.com/profile/api-tokens) with “Edit Cloudflare Workers”).
+3. Optional: copy `.dev.vars.example` to `.dev.vars` for local env; `npm run preview` runs the app locally in the Workers runtime.
 
-- **Build command:** `npm run build:pages`
-- **Build output directory:** `.open-next`
-- **Deploy:** Use **Workers** (not Pages): connect repo and set deploy command to `npx opennextjs-cloudflare deploy --config wrangler.workers.jsonc`, or run locally: `npm run deploy` (builds + deploys with Wrangler).
+### From Cloudflare dashboard (Git)
 
-### Deploy as a Page (optional; may show black page)
+1. **Workers & Pages** → **Create** → **Worker** → **Connect to Git** (not “Pages”).
+2. Pick this repo and branch.
+3. **Build settings:**
+   - **Build command:** `npx opennextjs-cloudflare build`
+   - **Deploy command:** `npx opennextjs-cloudflare deploy --config wrangler.jsonc`
+   - **Build output directory:** leave empty.
+4. **Environment variables:** add `CLOUDFLARE_API_TOKEN` (or use the dashboard’s Wrangler auth).
+5. Save and deploy.
 
-If you use **Pages** (e.g. for Git integration + custom domain):
-
-1. **Build command:** `npm run build:pages`
-2. **Build output directory:** `.open-next`
-3. **Framework preset:** None.
-
-Pages runs `_worker.js` but does not inject ASSETS/WORKER_SELF_REFERENCE the same way Workers do, so you may get a black screen. If that happens, deploy as a **Worker** (see above).
-
-### Local preview
-
-- **Preview (Workers runtime):** `npm run preview`
-- **Deploy (Worker):** `npm run deploy`
-
-Requires Wrangler 3.99+. Workers CLI uses `wrangler.workers.jsonc`. Optional: copy `.dev.vars.example` to `.dev.vars` for local Wrangler env.
-
-### If you see a black page (Pages or Workers)
-
-- **Use Workers:** Deploy as a Worker with `wrangler.workers.jsonc` so ASSETS and WORKER_SELF_REFERENCE are set. Pages often does not provide these bindings.
-- **Build must succeed:** This repo uses system fonts (no `next/font` Google Fonts) so the build works in CI and on Cloudflare without network to fonts.googleapis.com.
-- **assetPrefix (Pages only):** `build:pages` sets `NEXT_PUBLIC_ASSET_PREFIX=/assets` so script/link URLs match where Pages serves files.
-
-### If Pages still returns 404 for routes
-
-- Confirm **Build output directory** is `.open-next` (not `.open-next/assets` or `out`).
-- Confirm the build ran `npm run build:pages` (which copies `worker.js` → `_worker.js` and flattens assets so Pages runs the Worker and serves static files).
-
-### Deploy as a static Page only (no SSR, no API routes)
-
-If you only need a static site (no API routes, no SSR), you can use Next.js static export and deploy the `out` folder to Pages:
-
-1. In `next.config.js` add `output: 'export'`.
-2. Remove or stub API routes (they won’t run).
-3. Ensure dynamic routes (e.g. `/producer/[id]`) have `generateStaticParams` or use client-side routing only.
-4. Set Pages **Build command** to `npm run build` and **Build output directory** to `out`.
-
-**Effort:** Medium (config + removing/stubbing server-only features). **Limitation:** No server-side APIs, no SSR, no auth that depends on the server.
-
+**Important:** The deploy command must include `--config wrangler.jsonc` so Wrangler uses this repo’s Worker config. Otherwise the build environment can inject a Pages config and you’ll see: “Workers-specific command in a Pages project”.
