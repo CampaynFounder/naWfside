@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "clean": "rm -rf .next",
+    "dev:clean": "npm run clean && next dev",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "vitest"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.29.0",
+    "framer-motion": "^12.29.2",
     "next": "^13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",

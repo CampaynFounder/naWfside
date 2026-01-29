@@ -1,23 +1,18 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import HamburgerMenu from './HamburgerMenu.client';
 
-export default function Header({ balance = 0 }: { balance?: number }) {
+export default function Header() {
   return (
-    <header className="w-full py-4 px-6 flex items-center justify-between bg-transparent border-b border-gray-800">
-      <div className="flex items-center space-x-4">
-        <Link href="/">
-          <span className="text-2xl font-bold text-white">naWfside</span>
-        </Link>
-        <nav className="hidden md:flex space-x-3 text-gray-300">
-          <Link href="/(artist)/marketplace">Marketplace</Link>
-          <Link href="/(producer)/dashboard">Producer</Link>
-        </nav>
-      </div>
-      <div className="flex items-center space-x-4">
-        <div className="text-sm text-gray-300">
-          Credits: <span className="font-semibold text-white">{balance}</span>
-        </div>
-        <button className="px-3 py-1 bg-[#6b21a8] rounded text-white text-sm">Sign in</button>
-      </div>
+    <header className="relative w-full flex items-center justify-between gap-3 border-b border-gray-800 bg-transparent px-4 py-3 sm:px-6 sm:py-4" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
+      <Link href="/" className="flex shrink-0 items-center touch-target py-2 min-h-[44px]">
+        <Image src="/logo.png" alt="naWfside" width={120} height={40} className="max-w-[100px] object-contain sm:max-w-[120px]" style={{ width: 'auto', height: 'auto' }} priority />
+      </Link>
+      <nav className="hidden md:flex md:items-center md:gap-3 text-gray-300">
+        <Link href="/(artist)/marketplace" className="touch-target py-2">Marketplace</Link>
+        <Link href="/(producer)/dashboard" className="touch-target py-2">Producer</Link>
+      </nav>
+      <HamburgerMenu />
     </header>
   );
 }

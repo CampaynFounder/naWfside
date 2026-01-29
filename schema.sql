@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS credits_ledger (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- lora_models: Trained producer models
+-- Producer trained sound models (trained on producer stems)
 CREATE TABLE IF NOT EXISTS lora_models (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   producer_id UUID REFERENCES profiles,

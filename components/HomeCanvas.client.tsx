@@ -2,6 +2,11 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+const ROWS = 50;
+const COLS = 200;
+const SEPARATION = 1.2;
+const PARTICLE_COUNT = ROWS * COLS;
+
 export default function HomeCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -9,123 +14,190 @@ export default function HomeCanvas() {
     const container = containerRef.current;
     if (!container) return;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(window.devicePixelRatio || 1);
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
+    let cleanup: (() => void) | null = null;
 
-    camera.position.z = 5;
+    function init() {
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      if (w < 1 || h < 1) return;
 
-    const particleCount = 6000;
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x050505, 0.002);
 
-    for (let i = 0; i < particleCount; i++) {
-      const phi = Math.acos(-1 + (2 * i) / particleCount);
-      const theta = Math.sqrt(particleCount * Math.PI) * phi;
-
-      positions[i * 3] = 2 * Math.cos(theta) * Math.sin(phi);
-      positions[i * 3 + 1] = 2 * Math.sin(theta) * Math.sin(phi);
-      positions[i * 3 + 2] = 2 * Math.cos(phi);
-
-      // start as white-ish
-      colors[i * 3] = 1.0;
-      colors[i * 3 + 1] = 1.0;
-      colors[i * 3 + 2] = 1.0;
-    }
-
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const material = new THREE.PointsMaterial({
-      size: 0.02,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.9,
-      blending: THREE.AdditiveBlending
-    });
-
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
-
-    let mouse = new THREE.Vector2(0, 0);
-    let target = new THREE.Vector2(0, 0);
-
-    function onMove(e: MouseEvent) {
-      const rect = container.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      target.x = mouse.x;
-      target.y = mouse.y;
-    }
-
-    window.addEventListener('mousemove', onMove);
-
-    let time = 0;
-    function animate() {
-      time += 0.01;
-      // lerp a camera offset based on target
-      camera.position.x += (target.x * 2 - camera.position.x) * 0.03;
-      camera.position.y += (target.y * 2 - camera.position.y) * 0.03;
+      const aspect = w / h;
+      const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+      camera.position.set(0, 10, 30);
       camera.lookAt(0, 0, 0);
 
-      const pos = geometry.attributes.position.array as Float32Array;
-      const col = geometry.attributes.color.array as Float32Array;
-      for (let i = 0; i < particleCount; i++) {
-        // gentle breathing
-        const idx3 = i * 3;
-        const ox = pos[idx3];
-        const oy = pos[idx3 + 1];
-        pos[idx3] = ox + Math.sin(time + i * 0.001) * 0.0015;
-        pos[idx3 + 1] = oy + Math.cos(time + i * 0.001) * 0.0015;
-
-        // color transition influenced by mouse distance
-        const dx = ox - target.x * 2;
-        const dy = oy - target.y * 2;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        // map distance to 0..1
-        const t = Math.max(0, Math.min(1, 1.0 - d / 3.0));
-
-        // color spectrum between white and neon (cyan-magenta)
-        const neon = new THREE.Color().setHSL(0.75 + 0.25 * Math.sin(time * 0.5), 0.9, 0.5);
-        const white = new THREE.Color(1, 1, 1);
-        const mixed = white.clone().lerp(neon, t);
-
-        col[idx3] = mixed.r;
-        col[idx3 + 1] = mixed.g;
-        col[idx3 + 2] = mixed.b;
-      }
-      geometry.attributes.position.needsUpdate = true;
-      geometry.attributes.color.needsUpdate = true;
-
-      points.rotation.y += 0.0015;
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-
-    function onResize() {
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setClearColor(0x050505, 1);
       renderer.setSize(w, h);
-    }
-    window.addEventListener('resize', onResize);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      const canvas = renderer.domElement;
+      canvas.style.display = 'block';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.position = 'absolute';
+      canvas.style.left = '0';
+      canvas.style.top = '0';
+      container.appendChild(canvas);
 
-    // cleanup
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(PARTICLE_COUNT * 3);
+      const scales = new Float32Array(PARTICLE_COUNT);
+      const colors = new Float32Array(PARTICLE_COUNT * 3);
+
+      const color1 = new THREE.Color(0x00ffff);
+      const color2 = new THREE.Color(0xff00ff);
+
+      let i = 0;
+      for (let x = 0; x < COLS; x++) {
+        for (let z = 0; z < ROWS; z++) {
+          positions[i * 3] = (x - COLS / 2) * SEPARATION;
+          positions[i * 3 + 1] = 0;
+          positions[i * 3 + 2] = (z - ROWS / 2) * SEPARATION;
+
+          scales[i] = 1;
+
+          const mixRatio = Math.abs((x - COLS / 2) / (COLS / 2));
+          const finalColor = color1.clone().lerp(color2, mixRatio);
+          colors[i * 3] = finalColor.r;
+          colors[i * 3 + 1] = finalColor.g;
+          colors[i * 3 + 2] = finalColor.b;
+
+          i++;
+        }
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('scale', new THREE.BufferAttribute(scales, 1));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          color: { value: new THREE.Color(0xffffff) }
+        },
+        vertexShader: `
+          attribute float scale;
+          attribute vec3 color;
+          varying vec3 vColor;
+          void main() {
+            vColor = color;
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+            gl_PointSize = scale * ( 300.0 / - mvPosition.z );
+            gl_Position = projectionMatrix * mvPosition;
+          }
+        `,
+        fragmentShader: `
+          varying vec3 vColor;
+          void main() {
+            if (length(gl_PointCoord - vec2(0.5, 0.5)) > 0.475) discard;
+            gl_FragColor = vec4( vColor, 1.0 );
+          }
+        `,
+        transparent: true
+      });
+
+      const particles = new THREE.Points(geometry, material);
+      scene.add(particles);
+
+      const mouse = new THREE.Vector2();
+      const targetMouse = new THREE.Vector2();
+      const windowHalfX = window.innerWidth / 2;
+      const windowHalfY = window.innerHeight / 2;
+
+      function onMove(e: MouseEvent) {
+        targetMouse.x = (e.clientX - windowHalfX) * 0.1;
+        targetMouse.y = (e.clientY - windowHalfY) * 0.1;
+      }
+      function onResize() {
+        const rw = container.clientWidth || window.innerWidth;
+        const rh = container.clientHeight || window.innerHeight;
+        if (rw < 1 || rh < 1) return;
+        camera.aspect = rw / rh;
+        camera.updateProjectionMatrix();
+        renderer.setSize(rw, rh);
+      }
+
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('resize', onResize);
+
+      let frameId = 0;
+      let time = 0;
+
+      function animate() {
+        time += 0.05;
+
+        mouse.x += (targetMouse.x - mouse.x) * 0.05;
+        mouse.y += (targetMouse.y - mouse.y) * 0.05;
+
+        const posArr = particles.geometry.attributes.position.array as Float32Array;
+        const scaleArr = particles.geometry.attributes.scale.array as Float32Array;
+
+        let idx = 0;
+        for (let x = 0; x < COLS; x++) {
+          for (let z = 0; z < ROWS; z++) {
+            const worldX = (x - COLS / 2) * SEPARATION;
+            const worldZ = (z - ROWS / 2) * SEPARATION;
+
+            const dist = Math.sqrt(Math.pow(worldX - mouse.x, 2) + Math.pow(worldZ - mouse.y * 2, 2));
+            const mouseInfluence = Math.max(0, (20 - dist) / 5);
+
+            let y = Math.sin((x + time) * 0.3) * 2 + Math.sin((z + time) * 0.5) * 2;
+            y += mouseInfluence * Math.sin((x * 2 + time * 5)) * 5;
+
+            posArr[idx * 3 + 1] = y;
+
+            let s = (y + 5) / 5;
+            scaleArr[idx] = s < 0.5 ? 0.5 : s;
+
+            idx++;
+          }
+        }
+
+        particles.geometry.attributes.position.needsUpdate = true;
+        particles.geometry.attributes.scale.needsUpdate = true;
+
+        particles.rotation.y = Math.sin(time * 0.1) * 0.1;
+
+        renderer.render(scene, camera);
+        frameId = requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      cleanup = () => {
+        cancelAnimationFrame(frameId);
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('resize', onResize);
+        if (renderer.domElement.parentNode) {
+          renderer.domElement.remove();
+        }
+        renderer.dispose();
+      };
+    }
+
+    // Defer init until after layout so container has dimensions
+    const rafId = requestAnimationFrame(() => {
+      init();
+    });
+
     return () => {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('resize', onResize);
-      renderer.domElement.remove();
-      renderer.dispose();
+      cancelAnimationFrame(rafId);
+      cleanup?.();
     };
   }, []);
 
-  return <div ref={containerRef} className="absolute inset-0 -z-10" />;
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 z-0"
+      style={{
+        width: '100%',
+        height: '100%',
+        minWidth: '100vw',
+        minHeight: '100vh',
+      }}
+    />
+  );
 }
-

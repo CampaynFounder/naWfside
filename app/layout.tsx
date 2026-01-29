@@ -1,9 +1,18 @@
 import './globals.css';
 import Script from 'next/script';
+import type { Viewport } from 'next';
 
 export const metadata = {
   title: 'naWfside',
-  description: 'AI Record Label & Marketplace'
+  description: 'AI Record Label & Marketplace',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#0a0a0f',
+  viewportFit: 'cover', // safe-area insets for notched devices
 };
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID;

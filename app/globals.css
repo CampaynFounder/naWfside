@@ -2,13 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #__next {
+/* Mobile-first: prevent horizontal scroll, safe areas for notches */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+html,
+body,
+#__next {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
   background: #0b0710;
   color: #e6e1e5;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  /* Safe area for notched devices (e.g. iPhone) */
+  padding-top: env(safe-area-inset-top, 0);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Touch-friendly: ensure tap targets can be sized via .touch-target utility */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4), 0 0 40px rgba(34, 211, 238, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(34, 211, 238, 0.7), 0 0 64px rgba(34, 211, 238, 0.35);
+  }
+}
+
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
 }
 
