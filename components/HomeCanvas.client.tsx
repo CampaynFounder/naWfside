@@ -17,8 +17,10 @@ export default function HomeCanvas() {
     let cleanup: (() => void) | null = null;
 
     function init() {
-      const w = container.clientWidth || window.innerWidth;
-      const h = container.clientHeight || window.innerHeight;
+      const el = containerRef.current;
+      if (!el) return;
+      const w = el.clientWidth || window.innerWidth;
+      const h = el.clientHeight || window.innerHeight;
       if (w < 1 || h < 1) return;
 
       const scene = new THREE.Scene();
@@ -40,7 +42,7 @@ export default function HomeCanvas() {
       canvas.style.position = 'absolute';
       canvas.style.left = '0';
       canvas.style.top = '0';
-      container.appendChild(canvas);
+      el.appendChild(canvas);
 
       const geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(PARTICLE_COUNT * 3);
@@ -111,8 +113,10 @@ export default function HomeCanvas() {
         targetMouse.y = (e.clientY - windowHalfY) * 0.1;
       }
       function onResize() {
-        const rw = container.clientWidth || window.innerWidth;
-        const rh = container.clientHeight || window.innerHeight;
+        const el = containerRef.current;
+        if (!el) return;
+        const rw = el.clientWidth || window.innerWidth;
+        const rh = el.clientHeight || window.innerHeight;
         if (rw < 1 || rh < 1) return;
         camera.aspect = rw / rh;
         camera.updateProjectionMatrix();
