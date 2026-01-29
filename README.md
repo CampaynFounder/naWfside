@@ -18,5 +18,5 @@ For **Cloudflare Pages** (Git): set **Build command** to `npm run build:pages` a
 
 For Workers (CLI): run `npm run deploy` after `npm ci`. Use Node 18+ and set env vars (e.g. Supabase, Stripe) in the Cloudflare project.
 
-Requires Wrangler 3.99+ and `wrangler.jsonc` (included). Optional: copy `.dev.vars.example` to `.dev.vars` for local Wrangler env.
+Requires Wrangler 3.99+. **Pages** reads `wrangler.toml` only (no ASSETS binding). **Workers** CLI uses `wrangler.workers.jsonc`. Optional: copy `.dev.vars.example` to `.dev.vars` for local Wrangler env.
 

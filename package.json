@@ -11,10 +11,10 @@
     "dev:clean": "npm run clean && next dev",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "vitest",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview --config wrangler.workers.jsonc",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy --config wrangler.workers.jsonc",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload --config wrangler.workers.jsonc",
+    "cf-typegen": "wrangler types --config wrangler.workers.jsonc --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.29.0",
