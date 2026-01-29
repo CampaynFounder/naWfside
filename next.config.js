@@ -5,11 +5,13 @@ const nextConfig = {
 
 module.exports = nextConfig;
 
-// Optional: enable OpenNext Cloudflare bindings when running `next dev`
-try {
-  const { initOpenNextCloudflareForDev } = require("@opennextjs/cloudflare");
-  initOpenNextCloudflareForDev();
-} catch (_) {
-  // @opennextjs/cloudflare not installed or not needed
+// Optional: enable OpenNext Cloudflare bindings only when running `next dev`
+if (process.env.NODE_ENV === "development") {
+  try {
+    const { initOpenNextCloudflareForDev } = require("@opennextjs/cloudflare");
+    initOpenNextCloudflareForDev();
+  } catch (_) {
+    // @opennextjs/cloudflare not installed or not needed
+  }
 }
 

@@ -1,11 +1,15 @@
 'use client';
+import { use } from 'react';
 import Header from '../../../components/Header';
 import { producers } from '../../../lib/mock';
 import GenerationModal from '../../../components/GenerationModal.client';
 import Button from '../../../components/ui/Button.client';
 
-export default function ProducerProfile({ params }: any) {
-  const producer = producers.find((p) => p.id === params.producerId);
+type PageProps = { params: Promise<{ producerId: string }> };
+
+export default function ProducerProfile({ params }: PageProps) {
+  const { producerId } = use(params);
+  const producer = producers.find((p) => p.id === producerId);
   if (!producer) return <div className="p-8">Producer not found</div>;
 
   return (
