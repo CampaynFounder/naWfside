@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:pages": "opennextjs-cloudflare build && cp .open-next/worker.js .open-next/_worker.js",
+    "build:pages": "opennextjs-cloudflare build && cp .open-next/worker.js .open-next/_worker.js && cp -r .open-next/assets/. .open-next/ && rm -rf .open-next/assets",
     "start": "next start",
     "clean": "rm -rf .next",
     "dev:clean": "npm run clean && next dev",

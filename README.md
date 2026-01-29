@@ -37,10 +37,14 @@ OpenNext produces (1) **static assets** (`.open-next/assets`) and (2) a **Worker
 
 Requires Wrangler 3.99+. Workers CLI uses `wrangler.workers.jsonc`. Optional: copy `.dev.vars.example` to `.dev.vars` for local Wrangler env.
 
-### If Pages still returns 404
+### If Pages returns 404 for `/_next/static/*` (chunks, CSS, fonts)
+
+The build flattens `.open-next/assets/` into `.open-next/` so that `_next` is at the ASSETS root and the Worker can serve `/_next/static/chunks/...` correctly. If you still see 404s for static assets, deploy as a **Worker** instead (see above); Workers bind ASSETS to `.open-next/assets` directly and avoid path mismatches.
+
+### If Pages still returns 404 for routes
 
 - Confirm **Build output directory** is `.open-next` (not `.open-next/assets` or `out`).
-- Confirm the build ran `npm run build:pages` (which copies `worker.js` → `_worker.js` so Pages runs the Worker).
+- Confirm the build ran `npm run build:pages` (which copies `worker.js` → `_worker.js` and flattens assets so Pages runs the Worker and serves static files).
 
 ### Deploy as a static Page only (no SSR, no API routes)
 
