@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const overlayTransition = { type: 'tween' as const, duration: 0.2, ease: [0.32, 0.72, 0, 1] };
+const overlayTransition = { type: 'tween' as const, duration: 0.2, ease: [0.32, 0.72, 0, 1] as const };
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.9, y: -12 },
   visible: {
@@ -16,7 +16,7 @@ const modalVariants = {
     opacity: 0,
     scale: 0.95,
     y: 8,
-    transition: { type: 'tween' as const, duration: 0.18, ease: [0.32, 0.72, 0, 1] },
+    transition: { type: 'tween' as const, duration: 0.18, ease: [0.32, 0.72, 0, 1] as const },
   },
 };
 
