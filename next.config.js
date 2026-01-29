@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Pages: set NEXT_PUBLIC_ASSET_PREFIX=/assets so /_next/* resolves (ASSETS root is upload root, files under assets/)
+  ...(process.env.NEXT_PUBLIC_ASSET_PREFIX && {
+    assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX,
+  }),
 };
 
 module.exports = nextConfig;

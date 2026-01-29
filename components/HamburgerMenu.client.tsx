@@ -1,9 +1,8 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
-import { Monoton } from 'next/font/google';
 
-const monoton = Monoton({ weight: '400', subsets: ['latin'], display: 'optional' });
+const fontDisplay = 'font-display';
 
 const LOGGED_OUT_LINKS = [
   { href: '/about', label: 'About' },
@@ -23,7 +22,7 @@ export default function HamburgerMenu() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 active:bg-white/15 ${monoton.className}`}
+        className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 active:bg-white/15 ${fontDisplay}`}
         aria-label="Menu"
         aria-expanded={open}
       >
@@ -39,7 +38,7 @@ export default function HamburgerMenu() {
         <>
           <div className="fixed inset-0 z-10" aria-hidden onClick={() => setOpen(false)} />
           <nav
-            className={`absolute right-0 top-full z-20 mt-2 w-[calc(100vw-1.5rem)] max-w-[20rem] rounded-xl border border-gray-800 bg-[#0f0813] py-2 shadow-xl sm:w-56 ${monoton.className}`}
+            className={`absolute right-0 top-full z-20 mt-2 w-[calc(100vw-1.5rem)] max-w-[20rem] rounded-xl border border-gray-800 bg-[#0f0813] py-2 shadow-xl sm:w-56 ${fontDisplay}`}
             aria-label="Logged out navigation"
           >
             {LOGGED_OUT_LINKS.map(({ href, label, onClick: isButton }) =>

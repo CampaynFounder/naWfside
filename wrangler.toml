@@ -1,5 +1,5 @@
-# Cloudflare Pages: full .open-next/ so _worker.js runs (not just assets).
-# Build command must run build:pages (produces .open-next/ and copies worker → _worker.js).
+# Cloudflare Pages: full .open-next/ so _worker.js runs.
+# Build command: npm run build:pages. Output dir: .open-next
 name = "nawfside"
 pages_build_output_dir = ".open-next"
 compatibility_date = "2024-12-30"

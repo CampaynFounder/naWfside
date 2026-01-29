@@ -2,10 +2,10 @@
 import { useRef, useState, useCallback } from 'react';
 import CardHeaderWaveInView from './CardHeaderWaveInView.client';
 import Link from 'next/link';
-import { Monoton, Inter } from 'next/font/google';
 
-const monoton = Monoton({ weight: '400', subsets: ['latin'], display: 'optional' });
-const inter = Inter({ subsets: ['latin'], display: 'optional' });
+// System fonts to avoid next/font Google Fonts fetch (fails in CI/sandbox and can cause blank page)
+const fontDisplay = 'font-display';
+const fontBody = 'font-body';
 
 const CARDS = [
   {
@@ -147,7 +147,7 @@ export default function AboutContent() {
         style={{ maxWidth: 'min(100vw, 56.25vh)', backgroundColor: 'transparent', paddingBottom: 'max(6rem, env(safe-area-inset-bottom, 0) + 3rem)' }}
       >
         <p
-          className={`mb-8 text-center text-sm uppercase tracking-[0.3em] ${monoton.className}`}
+          className={`mb-8 text-center text-sm uppercase tracking-[0.3em] ${fontDisplay}`}
           style={{ color: '#67e8f9' }}
         >
           The AI Music Trap
@@ -175,7 +175,7 @@ export default function AboutContent() {
               <CardHook hook={card.hook} hookLabel={card.hookLabel} />
             </div>
             <div className="flex flex-1 flex-col justify-center p-6 text-center sm:p-8 pt-0 sm:pt-0">
-              <p className={`text-base font-semibold leading-snug text-white sm:text-lg md:text-xl ${inter.className}`}>
+              <p className={`text-base font-semibold leading-snug text-white sm:text-lg md:text-xl ${fontBody}`}>
                 {card.text}
               </p>
             </div>
@@ -198,12 +198,12 @@ export default function AboutContent() {
             <CardHeaderWaveInView />
           </div>
           <div className="flex flex-1 flex-col justify-center p-6 sm:p-8">
-            <p className={`mb-6 text-lg font-semibold leading-snug text-white sm:text-xl md:text-2xl ${inter.className}`}>
+            <p className={`mb-6 text-lg font-semibold leading-snug text-white sm:text-xl md:text-2xl ${fontBody}`}>
               Stop imitating. Start originating.
             </p>
             <Link
               href="#"
-              className={`inline-flex min-h-[48px] items-center justify-center rounded-xl bg-cyan-400 px-8 py-4 font-bold text-black shadow-[0_0_24px_rgba(0,255,255,0.5)] transition hover:bg-cyan-300 hover:shadow-[0_0_32px_rgba(0,255,255,0.6)] active:bg-cyan-300 ${inter.className}`}
+              className={`inline-flex min-h-[48px] items-center justify-center rounded-xl bg-cyan-400 px-8 py-4 font-bold text-black shadow-[0_0_24px_rgba(0,255,255,0.5)] transition hover:bg-cyan-300 hover:shadow-[0_0_32px_rgba(0,255,255,0.6)] active:bg-cyan-300 ${fontBody}`}
             >
               Get Early Access — JUUKJUNT
             </Link>
@@ -213,7 +213,7 @@ export default function AboutContent() {
         <div className="mt-8 text-center">
           <Link
             href="/"
-            className={`inline-flex min-h-[44px] items-center justify-center text-sm font-medium ${inter.className}`}
+            className={`inline-flex min-h-[44px] items-center justify-center text-sm font-medium ${fontBody}`}
             style={{ color: '#67e8f9' }}
           >
             ← Back to home

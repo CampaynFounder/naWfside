@@ -8,27 +8,25 @@ See `.env.example` for required environment variables.
 
 ## Deploy to Cloudflare
 
-This app uses [OpenNext Cloudflare](https://opennext.js.org/cloudflare). You can deploy as **Pages** or as a **Worker**.
+This app uses [OpenNext Cloudflare](https://opennext.js.org/cloudflare).
 
-### Why Pages was 404 before
+### Recommended: Deploy as a Worker (avoids black/blank page)
 
-OpenNext produces (1) **static assets** (`.open-next/assets`) and (2) a **Worker** (`.open-next/worker.js`) that handles all routes and SSR. If you only deploy the **assets** folder to Pages, Cloudflare serves static files but **no Worker runs** — so every request (including `/`) returns **404**. To deploy as a Page, the **whole** `.open-next` output must be deployed so that Pages can run the Worker (`_worker.js`).
+OpenNext needs **ASSETS** and **WORKER_SELF_REFERENCE** bindings. Workers provide these via `wrangler.workers.jsonc`; **Pages does not**, so deploying to Pages often results in a **completely black page** (no HTML or static assets served correctly).
 
-### Deploy as a Page (recommended for Git + custom domain)
+- **Build command:** `npm run build:pages`
+- **Build output directory:** `.open-next`
+- **Deploy:** Use **Workers** (not Pages): connect repo and set deploy command to `npx opennextjs-cloudflare deploy --config wrangler.workers.jsonc`, or run locally: `npm run deploy` (builds + deploys with Wrangler).
 
-1. In [Cloudflare](https://dash.cloudflare.com/) → **Workers & Pages** → **Create** → **Pages** → connect your Git repo.
-2. **Build settings:**
-   - **Build command:** `npm run build:pages`
-   - **Build output directory:** `.open-next` (from `wrangler.toml`; do not use `out` or `.open-next/assets` only).
-3. After each build, `build:pages` produces `.open-next/` and copies `worker.js` → `_worker.js` so Pages runs the Worker. Set env vars in the Pages project.
-4. Add a custom domain (e.g. `beats.juukjunt.com`) in the Pages project **Custom domains**.
+### Deploy as a Page (optional; may show black page)
 
-### Deploy as a Worker (alternative)
+If you use **Pages** (e.g. for Git integration + custom domain):
 
-- Use **Workers** (not Pages) in the dashboard, connect the repo, then:
-  - **Build command:** `npm run build:pages`
-  - **Deploy command:** `npx opennextjs-cloudflare deploy --config wrangler.workers.jsonc`
-- Or locally: `npm run deploy` (builds + deploys with Wrangler).
+1. **Build command:** `npm run build:pages`
+2. **Build output directory:** `.open-next`
+3. **Framework preset:** None.
+
+Pages runs `_worker.js` but does not inject ASSETS/WORKER_SELF_REFERENCE the same way Workers do, so you may get a black screen. If that happens, deploy as a **Worker** (see above).
 
 ### Local preview
 
@@ -37,9 +35,11 @@ OpenNext produces (1) **static assets** (`.open-next/assets`) and (2) a **Worker
 
 Requires Wrangler 3.99+. Workers CLI uses `wrangler.workers.jsonc`. Optional: copy `.dev.vars.example` to `.dev.vars` for local Wrangler env.
 
-### If Pages returns 404 for `/_next/static/*` (chunks, CSS, fonts)
+### If you see a black page (Pages or Workers)
 
-The build flattens `.open-next/assets/` into `.open-next/` so that `_next` is at the ASSETS root and the Worker can serve `/_next/static/chunks/...` correctly. If you still see 404s for static assets, deploy as a **Worker** instead (see above); Workers bind ASSETS to `.open-next/assets` directly and avoid path mismatches.
+- **Use Workers:** Deploy as a Worker with `wrangler.workers.jsonc` so ASSETS and WORKER_SELF_REFERENCE are set. Pages often does not provide these bindings.
+- **Build must succeed:** This repo uses system fonts (no `next/font` Google Fonts) so the build works in CI and on Cloudflare without network to fonts.googleapis.com.
+- **assetPrefix (Pages only):** `build:pages` sets `NEXT_PUBLIC_ASSET_PREFIX=/assets` so script/link URLs match where Pages serves files.
 
 ### If Pages still returns 404 for routes
 
