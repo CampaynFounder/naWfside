@@ -1,4 +1,4 @@
-\"use client\";
+"use client";
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
@@ -126,6 +126,6 @@ export default function HomeCanvas() {
     };
   }, []);
 
-  return <div ref={containerRef} className=\"absolute inset-0 -z-10\" />;
+  return <div ref={containerRef} className="absolute inset-0 -z-10" />;
 }
 
