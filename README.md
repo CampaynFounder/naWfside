@@ -24,10 +24,12 @@ This app uses [OpenNext Cloudflare](https://opennext.js.org/cloudflare). **Deplo
 1. **Workers & Pages** → **Create** → **Worker** → **Connect to Git** (not “Pages”).
 2. Pick this repo and branch.
 3. **Build settings:**
+   - **Root directory:** leave **empty** (so `wrangler.jsonc` at repo root is available).
    - **Build command:** `npx opennextjs-cloudflare build`
-   - **Deploy command:** `npx opennextjs-cloudflare deploy --config wrangler.jsonc`
+   - **Deploy command:** `cd "$(git rev-parse --show-toplevel)" && npx opennextjs-cloudflare deploy --config wrangler.jsonc`
    - **Build output directory:** leave empty.
 4. **Environment variables:** add `CLOUDFLARE_API_TOKEN` (or use the dashboard’s Wrangler auth).
-5. Save and deploy.
+5. Ensure the branch Cloudflare builds from has `wrangler.jsonc` (commit and push).
+6. Save and deploy.
 
-**Important:** The deploy command must include `--config wrangler.jsonc` so Wrangler uses this repo’s Worker config. Otherwise the build environment can inject a Pages config and you’ll see: “Workers-specific command in a Pages project”.
+**If you see “Could not read file: wrangler.jsonc”:** Set **Root directory** to empty, use the Deploy command above (it `cd`s to repo root first), and ensure `wrangler.jsonc` is committed and pushed on the build branch.

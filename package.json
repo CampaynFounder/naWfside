@@ -13,6 +13,7 @@
     "test": "vitest",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview --config wrangler.jsonc",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy --config wrangler.jsonc",
+    "deploy:ci": "opennextjs-cloudflare deploy --config wrangler.jsonc",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload --config wrangler.jsonc",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
