@@ -19,6 +19,19 @@ This app uses [OpenNext Cloudflare](https://opennext.js.org/cloudflare). **Deplo
 2. Set `CLOUDFLARE_API_TOKEN` (create at [Create API Token](https://dash.cloudflare.com/profile/api-tokens) with “Edit Cloudflare Workers”).
 3. Optional: copy `.dev.vars.example` to `.dev.vars` for local env; `npm run preview` runs the app locally in the Workers runtime.
 
+### Auto-deploy with GitHub Actions
+
+On every **push to `main`**, CI runs tests then deploys to Cloudflare Workers (see `.github/workflows/ci.yml`).
+
+**Required GitHub secrets** (Settings → Secrets and variables → Actions):
+
+| Secret | Where to get it |
+|--------|------------------|
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare dashboard → Workers & Pages → right sidebar “Account ID” |
+| `CLOUDFLARE_API_TOKEN` | [Create API Token](https://dash.cloudflare.com/profile/api-tokens) with “Edit Cloudflare Workers” |
+
+After adding both secrets, push to `main` and the **Deploy to Cloudflare Workers** job will run.
+
 ### From Cloudflare dashboard (Git)
 
 1. **Workers & Pages** → **Create** → **Worker** → **Connect to Git** (not “Pages”).
