@@ -40,12 +40,15 @@ export default function Home() {
           className="mt-3 max-w-2xl text-center text-base font-normal leading-snug text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] sm:text-lg md:text-xl"
           style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
         >
-          JuukJunt Partnered with Your Favorite{' '}
+          We&apos;ve Partnered With{' '}
           <Link href="/producers" className="font-semibold text-cyan-400 underline decoration-cyan-400/80 underline-offset-2 hover:text-cyan-300 hover:decoration-cyan-300">
-            Producers
+            Top Producers
           </Link>
-          {' '}To Train on Tomorrows Unreleased Hits Today.
+          {' '}To Create AI Twins of Their Sound.
         </h3>
+        <p className="mt-2 max-w-2xl text-center text-sm font-medium tracking-wide text-cyan-300/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] sm:text-base md:text-lg">
+          1 Platform · All Top Producers · Endless Creativity
+        </p>
         <GetBeatsForm />
       </div>
       {/* Wave starts below the header strip */}
