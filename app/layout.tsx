@@ -1,5 +1,6 @@
 import './globals.css';
 import Script from 'next/script';
+import SiteBackground from '../components/SiteBackground';
 
 export const metadata = {
   title: 'naWfside',
@@ -35,7 +36,10 @@ gtag('config', '${GA_MEASUREMENT_ID}');`}
           </>
         )}
       </head>
-      <body>{children}</body>
+      <body>
+        <SiteBackground />
+        <div className="relative z-10">{children}</div>
+      </body>
     </html>
   );
 }

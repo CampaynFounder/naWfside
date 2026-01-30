@@ -1,8 +1,11 @@
-modal-sdk>=0.1.0
+# Modal and runtime
+modal>=0.64.0
+
+# ACE-Step is installed from git in the image; MusicGen/transformers in training_image
+# Local dev / backends that import optionally:
 torch>=2.2.0
 transformers>=4.40.0
 peft>=0.6.0
 mutagen>=1.46.0
-ffmpeg-python>=0.3.0
 soundfile>=0.12.1
 numpy>=1.26.0

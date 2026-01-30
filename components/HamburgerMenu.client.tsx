@@ -11,7 +11,7 @@ const LOGGED_OUT_LINKS = [
   { href: '/blog', label: 'Blog' },
   { href: '/terms', label: 'Terms' },
   { href: '/privacy', label: 'Privacy' },
-  { href: '#', label: 'Sign in', onClick: true },
+  { href: '/login', label: 'Sign in' },
 ];
 
 export default function HamburgerMenu() {
@@ -41,27 +41,16 @@ export default function HamburgerMenu() {
             className={`absolute right-0 top-full z-20 mt-2 w-[calc(100vw-1.5rem)] max-w-[20rem] rounded-xl border border-gray-800 bg-[#0f0813] py-2 shadow-xl sm:w-56 ${fontDisplay}`}
             aria-label="Logged out navigation"
           >
-            {LOGGED_OUT_LINKS.map(({ href, label, onClick: isButton }) =>
-              isButton ? (
-                <button
-                  key={label}
-                  type="button"
-                  className="flex min-h-[48px] w-full items-center px-4 text-left text-gray-200 hover:bg-white/10 hover:text-white active:bg-white/15"
-                  onClick={() => setOpen(false)}
-                >
-                  {label}
-                </button>
-              ) : (
-                <Link
-                  key={label}
-                  href={href}
-                  className="flex min-h-[48px] items-center px-4 text-gray-200 hover:bg-white/10 hover:text-white active:bg-white/15"
-                  onClick={() => setOpen(false)}
-                >
-                  {label}
-                </Link>
-              )
-            )}
+            {LOGGED_OUT_LINKS.map(({ href, label }) => (
+              <Link
+                key={label}
+                href={href}
+                className="flex min-h-[48px] items-center px-4 text-gray-200 hover:bg-white/10 hover:text-white active:bg-white/15"
+                onClick={() => setOpen(false)}
+              >
+                {label}
+              </Link>
+            ))}
           </nav>
         </>
       )}
